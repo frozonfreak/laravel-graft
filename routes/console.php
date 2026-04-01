@@ -1,10 +1,7 @@
 <?php
 
-use App\Console\Commands\DetectPatterns;
-use App\Console\Commands\DispatchScheduledFeatures;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -15,10 +12,10 @@ Artisan::command('inspire', function () {
 | Scheduled Commands
 |--------------------------------------------------------------------------
 |
-| evolution:detect-patterns  — runs daily to find promotion candidates
-| features:dispatch-scheduled — runs every minute to trigger feature executions
+| GraftAI module schedules are defined in:
+| Modules/GraftAI/app/Providers/GraftAIServiceProvider::configureSchedules()
+|
+|   evolution:detect-patterns    — daily at 02:00
+|   features:dispatch-scheduled  — every minute
 |
 */
-
-Schedule::command(DispatchScheduledFeatures::class)->everyMinute();
-Schedule::command(DetectPatterns::class)->dailyAt('02:00');

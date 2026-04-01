@@ -1,0 +1,11 @@
+{
+    "name": "GraftAI",
+    "alias": "graftai",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\GraftAI\\Providers\\GraftAIServiceProvider"
+    ],
+    "files": []
+}

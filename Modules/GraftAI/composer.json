@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/graftai",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\GraftAI\\": "app/",
+            "Modules\\GraftAI\\Database\\Factories\\": "database/factories/",
+            "Modules\\GraftAI\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\GraftAI\\Tests\\": "tests/"
+        }
+    }
+}
