@@ -1,8 +1,78 @@
 # GraftAI Module
 
-An AI-Driven Evolving System for farm SaaS platforms — built as a **nwidart/laravel-modules** module.
+**GraftAI turns your Laravel SaaS into a platform that learns from its users and builds new features for itself — automatically.**
 
-The system observes tenant usage patterns, detects recurring pipeline shapes, and promotes proven sandbox behaviors into first-class platform operators via a governance review cycle. The platform **evolves itself** without human-written migrations.
+Instead of guessing what data rules and automations your tenants need, you let them describe what they want in plain English. GraftAI converts that into a real, working data pipeline. Over time, it watches which pipelines your tenants actually use, spots the popular ones, and surfaces them as candidates to become built-in platform features — all without you writing a single migration or deploying new code.
+
+---
+
+## What does it actually do?
+
+Imagine you run a farm management SaaS. Your tenants have different needs:
+
+- *"Alert me when my crop yield drops more than 15% compared to last week"*
+- *"Every morning, show me the top 5 fields with the highest moisture levels"*
+- *"Notify me if any equipment hasn't logged activity in 3 days"*
+
+Right now, building features like these means your team writes code for each request. With GraftAI:
+
+1. **The tenant types their request in plain English** into the UI.
+2. **The AI (Claude) converts it into a structured data pipeline** — a set of operations like "filter by field, group by date, compare to threshold."
+3. **The tenant sees a plain-English summary** of what the pipeline will do, reviews the cost estimate, and confirms.
+4. **The pipeline runs on a schedule** (e.g., every morning), processes live data from your database, and triggers actions like email/SMS/webhooks when conditions are met.
+5. **GraftAI watches what gets used.** When enough different tenants independently build the same *shape* of pipeline, it flags it as a "promotion candidate."
+6. **You review and approve** — one click promotes it into a first-class named capability in the platform, versioned and logged forever.
+
+The platform gets smarter the more people use it. Features your users actually need bubble up automatically. You spend your engineering time on the things only you can build.
+
+---
+
+## How this helps your SaaS
+
+| Problem | How GraftAI helps |
+|---|---|
+| Tenants request custom features faster than you can build them | They build their own rules in plain English — no dev needed |
+| You don't know which features are worth investing in | Usage signals tell you exactly which pipelines are popular |
+| New features are risky to ship without validation | Every pipeline runs in "sandbox" mode first — proven pipelines get promoted |
+| Feature decisions are ad-hoc and undocumented | Every promotion goes through a governance review with an immutable audit log |
+| Custom code accumulates and becomes unmaintainable | Promoted capabilities are versioned, rollback-able, and self-documenting |
+
+---
+
+## The big picture: a self-evolving platform
+
+```
+Tenant describes a rule in plain English
+    ↓
+AI generates a data pipeline (DSL config)
+    ↓
+Tenant reviews the plain-English summary → confirms
+    ↓
+Pipeline runs on schedule, processes real data, fires actions
+    ↓
+GraftAI records anonymized "signals" (what ran, how it performed)
+    ↓
+Daily: detects pipeline shapes used by ≥3 tenants with ≥90% success
+    ↓
+Governance review: you approve or reject the promotion
+    ↓
+Approved → becomes a named, versioned built-in capability
+    ↓
+Platform evolves. No migrations written by hand.
+```
+
+---
+
+## Who is this for?
+
+GraftAI is a good fit if:
+
+- You run a **multi-tenant Laravel SaaS** where different tenants have different data rules and automation needs
+- You want to let tenants configure their own logic **without giving them access to code**
+- You want a **data-driven way to decide what features to build next**
+- You want an **audit trail** of every automation rule and every platform change
+
+It works best in domains with structured, queryable tenant data — farm management, logistics, fleet tracking, field services, IoT, or any operations-heavy SaaS.
 
 ---
 
@@ -124,29 +194,33 @@ Modules/GraftAI/
 
 ## DSL Reference
 
+The pipeline language GraftAI uses under the hood. The AI generates these — you don't write them manually — but understanding them helps when reviewing promoted capabilities.
+
 ### Operators
 
-| Operator     | Weight | Purpose                                   |
-|--------------|--------|-------------------------------------------|
-| `filter`     | 1      | Row-level predicate (eq, neq, gt, in, …)  |
-| `sort`       | 1      | Order + limit result set                  |
-| `group_by`   | 2      | Group rows (with optional date truncation)|
-| `compare`    | 2      | Threshold trigger (terminal operator)     |
-| `aggregate`  | 3      | sum / avg / min / max / count / median    |
-| `moving_avg` | 5      | N-day / N-week sliding window average     |
+| Operator     | Weight | What it does                                      |
+|--------------|--------|---------------------------------------------------|
+| `filter`     | 1      | Keep only rows matching a condition (eq, gt, in…) |
+| `sort`       | 1      | Order results and optionally limit to top N       |
+| `group_by`   | 2      | Group rows by a field (supports date truncation)  |
+| `compare`    | 2      | Check if a value crosses a threshold (terminal)   |
+| `aggregate`  | 3      | sum / avg / min / max / count / median            |
+| `moving_avg` | 5      | N-day or N-week sliding window average            |
 
 ### Cost Tiers
 
-| Score  | Tier     | Effect                                      |
-|--------|----------|---------------------------------------------|
-| 0–20   | low      | Auto-approved                               |
-| 21–60  | medium   | Auto-approved, logged                       |
-| 61–150 | high     | Requires explicit cost acknowledgment       |
-| 151+   | rejected | Pipeline rejected at Stage 1                |
+Each pipeline gets a cost score before it runs. Higher scores mean more compute.
+
+| Score  | Tier     | Effect                                          |
+|--------|----------|-------------------------------------------------|
+| 0–20   | low      | Auto-approved                                   |
+| 21–60  | medium   | Auto-approved, logged                           |
+| 61–150 | high     | Tenant must explicitly acknowledge the cost     |
+| 151+   | rejected | Pipeline is rejected before it can be saved     |
 
 ### Promotion Thresholds
 
-A pipeline shape becomes a `PromotionCandidate` when it meets all four thresholds:
+A pipeline shape becomes a promotion candidate when all four conditions are met:
 
 - **≥ 3** distinct opted-in tenants using the same shape
 - **≥ 200** weighted execution score (Σ min(per_feature_count, 500))
