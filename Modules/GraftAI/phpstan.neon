@@ -1,0 +1,12 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src/
+
+    level: 5
+
+    ignoreErrors:
+        # Dynamic relationships are not statically analysable
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'

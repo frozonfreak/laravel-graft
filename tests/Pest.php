@@ -1,6 +1,7 @@
 <?php
 
 use Tests\TestCase;
+use GraftAI\Tests\TestCase as GraftAITestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,10 @@ use Tests\TestCase;
 |
 */
 
-pest()->extend(TestCase::class)
-    ->in('Feature', '../Modules/GraftAI/tests/Feature');
+pest()->extend(TestCase::class)->in('Feature');
+
+pest()->extend(GraftAITestCase::class)
+    ->in('../Modules/GraftAI/tests/Feature', '../Modules/GraftAI/tests/Unit');
 
 /*
 |--------------------------------------------------------------------------

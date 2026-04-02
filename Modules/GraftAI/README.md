@@ -1,4 +1,4 @@
-# GraftAI Module
+# GraftAI Package
 
 **GraftAI turns your Laravel SaaS into a platform that learns from its users and builds new features for itself — automatically.**
 
