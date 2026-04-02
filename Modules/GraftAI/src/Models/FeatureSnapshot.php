@@ -18,7 +18,7 @@ class FeatureSnapshot extends Model
     ];
 
     protected $casts = [
-        'features'   => 'array',
+        'features' => 'array',
         'created_at' => 'datetime',
     ];
 
@@ -32,13 +32,13 @@ class FeatureSnapshot extends Model
         $features = FeatureConfig::where('tenant_id', $tenantId)->get()->toArray();
 
         return static::create([
-            'tenant_id'              => $tenantId,
-            'snapshot_type'          => 'tenant',
-            'label'                  => $label,
-            'features'               => $features,
+            'tenant_id' => $tenantId,
+            'snapshot_type' => 'tenant',
+            'label' => $label,
+            'features' => $features,
             'dsl_version_at_snapshot' => $dslVersion,
-            'created_by'             => $createdBy,
-            'created_at'             => now(),
+            'created_by' => $createdBy,
+            'created_at' => now(),
         ]);
     }
 
@@ -47,13 +47,13 @@ class FeatureSnapshot extends Model
         $allFeatures = FeatureConfig::all()->toArray();
 
         return static::create([
-            'tenant_id'              => null,
-            'snapshot_type'          => 'system',
-            'label'                  => $label,
-            'features'               => $allFeatures,
+            'tenant_id' => null,
+            'snapshot_type' => 'system',
+            'label' => $label,
+            'features' => $allFeatures,
             'dsl_version_at_snapshot' => $dslVersion,
-            'created_by'             => 'system',
-            'created_at'             => now(),
+            'created_by' => 'system',
+            'created_at' => now(),
         ]);
     }
 }

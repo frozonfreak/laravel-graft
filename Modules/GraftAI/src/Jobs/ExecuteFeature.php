@@ -28,7 +28,8 @@ class ExecuteFeature implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $timeout = 30;
-    public int $tries   = 1;
+
+    public int $tries = 1;
 
     public function __construct(
         public readonly string $featureId,
@@ -37,10 +38,10 @@ class ExecuteFeature implements ShouldQueue
     ) {}
 
     public function handle(
-        PolicyEngine    $policy,
+        PolicyEngine $policy,
         PipelineExecutor $executor,
         DataSourceLoader $loader,
-        SignalEmitter   $emitter,
+        SignalEmitter $emitter,
         ActionDispatcher $dispatcher,
     ): void {
         $feature = FeatureConfig::findOrFail($this->featureId);
@@ -51,14 +52,15 @@ class ExecuteFeature implements ShouldQueue
             AuditEvent::log($this->tenantId, $this->featureId, 'execution_blocked', 'system', [
                 'reason' => $check['reason'],
             ]);
+
             return;
         }
 
         $execution = FeatureExecution::create([
-            'feature_id'  => $this->featureId,
-            'tenant_id'   => $this->tenantId,
-            'status'      => 'running',
-            'started_at'  => now(),
+            'feature_id' => $this->featureId,
+            'tenant_id' => $this->tenantId,
+            'status' => 'running',
+            'started_at' => now(),
         ]);
 
         $startMs = microtime(true);
@@ -73,15 +75,15 @@ class ExecuteFeature implements ShouldQueue
 
             $result = $executor->execute($feature->pipeline, $data);
 
-            $elapsedMs   = (int) round((microtime(true) - $startMs) * 1000);
+            $elapsedMs = (int) round((microtime(true) - $startMs) * 1000);
             $rowsScanned = $result['rows_scanned'];
 
             $execution->update([
-                'status'       => 'success',
+                'status' => 'success',
                 'completed_at' => now(),
                 'execution_ms' => $elapsedMs,
                 'rows_scanned' => $rowsScanned,
-                'cost_actual'  => $feature->cost_estimate['score'] ?? 0,
+                'cost_actual' => $feature->cost_estimate['score'] ?? 0,
             ]);
 
             $feature->update(['last_executed_at' => now()]);
@@ -105,12 +107,12 @@ class ExecuteFeature implements ShouldQueue
             $elapsedMs = (int) round((microtime(true) - $startMs) * 1000);
 
             $execution->update([
-                'status'       => 'failure',
+                'status' => 'failure',
                 'completed_at' => now(),
                 'execution_ms' => $elapsedMs,
                 'error_detail' => [
                     'message' => $e->getMessage(),
-                    'class'   => get_class($e),
+                    'class' => get_class($e),
                 ],
             ]);
 

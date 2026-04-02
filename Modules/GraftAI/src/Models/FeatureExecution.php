@@ -16,9 +16,9 @@ class FeatureExecution extends Model
     ];
 
     protected $casts = [
-        'started_at'     => 'datetime',
-        'completed_at'   => 'datetime',
-        'error_detail'   => 'array',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'error_detail' => 'array',
         'signal_emitted' => 'boolean',
     ];
 

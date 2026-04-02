@@ -30,7 +30,7 @@ class GovernanceController extends Controller
 
     public function candidates(Request $request): JsonResponse
     {
-        $status     = $request->input('status', 'pending');
+        $status = $request->input('status', 'pending');
         $candidates = PromotionCandidate::where('status', $status)
             ->orderByDesc('weighted_exec_score')
             ->get();
@@ -55,7 +55,7 @@ class GovernanceController extends Controller
     public function reject(Request $request, string $id): JsonResponse
     {
         $candidate = PromotionCandidate::findOrFail($id);
-        $reviewer  = $request->input('reviewer', 'dev_review');
+        $reviewer = $request->input('reviewer', 'dev_review');
         $candidate->reject($reviewer);
 
         return response()->json($candidate->fresh());
@@ -74,7 +74,7 @@ class GovernanceController extends Controller
         }
 
         $candidate->update([
-            'status'      => 'pending',
+            'status' => 'pending',
             'reviewed_by' => null,
             'reviewed_at' => null,
         ]);
@@ -96,7 +96,7 @@ class GovernanceController extends Controller
             return response()->json(['error' => 'Only promoted candidates can be rolled back.'], 422);
         }
 
-        $capability = CapabilityRegistry::where('introduced_by', 'promotion:' . $candidate->id)->first();
+        $capability = CapabilityRegistry::where('introduced_by', 'promotion:'.$candidate->id)->first();
 
         if (! $capability) {
             return response()->json(['error' => 'No capability found for this candidate. It may have been rolled back already.'], 404);
@@ -109,7 +109,7 @@ class GovernanceController extends Controller
         );
 
         return response()->json([
-            'message'   => "Candidate rolled back. Capability '{$capability->name}' deprecated.",
+            'message' => "Candidate rolled back. Capability '{$capability->name}' deprecated.",
             'candidate' => $candidate->fresh(),
         ]);
     }
@@ -118,14 +118,14 @@ class GovernanceController extends Controller
     {
         $request->validate(['operator_name' => 'required|string|alpha_dash|max:100']);
 
-        $candidate    = PromotionCandidate::findOrFail($id);
+        $candidate = PromotionCandidate::findOrFail($id);
         $operatorName = $request->input('operator_name');
-        $promotedBy   = $request->input('promoted_by', 'dev_review');
+        $promotedBy = $request->input('promoted_by', 'dev_review');
 
         $this->pipeline->promote($candidate, $operatorName, $promotedBy);
 
         return response()->json([
-            'message'   => "Operator '{$operatorName}' promoted successfully.",
+            'message' => "Operator '{$operatorName}' promoted successfully.",
             'candidate' => $candidate->fresh(),
         ]);
     }
@@ -136,12 +136,12 @@ class GovernanceController extends Controller
 
         $capability = CapabilityRegistry::findOrFail($id);
         $rollbackBy = $request->input('rolled_back_by', 'dev_review');
-        $notes      = $request->input('notes', '');
+        $notes = $request->input('notes', '');
 
         $this->pipeline->rollback($capability, $rollbackBy, $notes);
 
         return response()->json([
-            'message'    => "Capability '{$capability->name}' rolled back.",
+            'message' => "Capability '{$capability->name}' rolled back.",
             'capability' => $capability->fresh(),
         ]);
     }

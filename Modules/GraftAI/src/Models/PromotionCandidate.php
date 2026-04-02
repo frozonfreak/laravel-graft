@@ -29,7 +29,7 @@ class PromotionCandidate extends Model
     public function approve(string $reviewer): void
     {
         $this->update([
-            'status'      => 'approved',
+            'status' => 'approved',
             'reviewed_by' => $reviewer,
             'reviewed_at' => now(),
         ]);
@@ -38,7 +38,7 @@ class PromotionCandidate extends Model
     public function reject(string $reviewer): void
     {
         $this->update([
-            'status'      => 'rejected',
+            'status' => 'rejected',
             'reviewed_by' => $reviewer,
             'reviewed_at' => now(),
         ]);

@@ -1,7 +1,7 @@
 <?php
 
-use Tests\TestCase;
 use GraftAI\Tests\TestCase as GraftAITestCase;
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------

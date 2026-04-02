@@ -16,7 +16,7 @@ class AuditEvent extends Model
     ];
 
     protected $casts = [
-        'detail'     => 'array',
+        'detail' => 'array',
         'created_at' => 'datetime',
     ];
 
@@ -42,11 +42,11 @@ class AuditEvent extends Model
         array $detail = []
     ): self {
         return static::create([
-            'tenant_id'  => $tenantId,
+            'tenant_id' => $tenantId,
             'feature_id' => $featureId,
             'event_type' => $eventType,
-            'actor'      => $actor,
-            'detail'     => $detail,
+            'actor' => $actor,
+            'detail' => $detail,
             'created_at' => now(),
         ]);
     }

@@ -17,7 +17,7 @@ class CapabilityRegistry extends Model
     ];
 
     protected $casts = [
-        'ops'    => 'array',
+        'ops' => 'array',
         'fields' => 'array',
     ];
 

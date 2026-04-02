@@ -24,7 +24,7 @@ class SignalController extends Controller
         $signal = ExecutionSignal::findOrFail($id);
 
         $tenantId = $request->header('X-Tenant-ID');
-        $feature  = FeatureConfig::where('id', $signal->feature_id)
+        $feature = FeatureConfig::where('id', $signal->feature_id)
             ->where('tenant_id', $tenantId)
             ->firstOrFail();
 

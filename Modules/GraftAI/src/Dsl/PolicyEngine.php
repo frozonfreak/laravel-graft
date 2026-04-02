@@ -34,7 +34,7 @@ class PolicyEngine
         }
 
         $dataSource = $config['data_source'];
-        $pipeline   = $config['pipeline'];
+        $pipeline = $config['pipeline'];
 
         // 2. data_source in tenant's granted capabilities
         $allowedCapabilities = CapabilityRegistry::activeCapabilityNames();
@@ -69,14 +69,14 @@ class PolicyEngine
         }
 
         // 7. Cost score
-        $costModel    = new CostModel();
+        $costModel = new CostModel;
         $costEstimate = $costModel->estimate($dataSource, $pipeline, $tenant->id);
 
         if ($costEstimate['tier'] === 'rejected') {
             return [
-                'ok'           => false,
-                'errors'       => ['Cost score exceeds limit. Suggest simplifying the pipeline.'],
-                'trust_tier'   => null,
+                'ok' => false,
+                'errors' => ['Cost score exceeds limit. Suggest simplifying the pipeline.'],
+                'trust_tier' => null,
                 'cost_estimate' => $costEstimate,
             ];
         }
@@ -106,9 +106,9 @@ class PolicyEngine
         }
 
         return [
-            'ok'           => true,
-            'errors'       => [],
-            'trust_tier'   => $trustTier,
+            'ok' => true,
+            'errors' => [],
+            'trust_tier' => $trustTier,
             'cost_estimate' => $costEstimate,
         ];
     }
@@ -188,11 +188,13 @@ class PolicyEngine
         foreach ($pipeline as $i => $step) {
             if (empty($step['op'])) {
                 $errors[] = "Step {$i}: missing 'op' field.";
+
                 continue;
             }
 
             if (! in_array($step['op'], DslDefinition::OPERATORS, true)) {
                 $errors[] = "Step {$i}: unknown operator '{$step['op']}'.";
+
                 continue;
             }
 
@@ -243,14 +245,26 @@ class PolicyEngine
         $errors = [];
         $fieldsToCheck = [];
 
-        if ($step['op'] === 'filter')      $fieldsToCheck[] = $step['field'] ?? null;
-        if ($step['op'] === 'group_by')    $fieldsToCheck[] = $step['field'] ?? null;
-        if ($step['op'] === 'aggregate')   $fieldsToCheck[] = $step['metric'] ?? null;
-        if ($step['op'] === 'moving_avg')  $fieldsToCheck[] = $step['metric'] ?? null;
-        if ($step['op'] === 'sort')        $fieldsToCheck[] = $step['field'] ?? null;
+        if ($step['op'] === 'filter') {
+            $fieldsToCheck[] = $step['field'] ?? null;
+        }
+        if ($step['op'] === 'group_by') {
+            $fieldsToCheck[] = $step['field'] ?? null;
+        }
+        if ($step['op'] === 'aggregate') {
+            $fieldsToCheck[] = $step['metric'] ?? null;
+        }
+        if ($step['op'] === 'moving_avg') {
+            $fieldsToCheck[] = $step['metric'] ?? null;
+        }
+        if ($step['op'] === 'sort') {
+            $fieldsToCheck[] = $step['field'] ?? null;
+        }
 
         foreach ($fieldsToCheck as $field) {
-            if ($field === null) continue;
+            if ($field === null) {
+                continue;
+            }
             if (! in_array($field, $allowedFields, true)) {
                 $errors[] = "Step {$index} ({$step['op']}): field '{$field}' is not in the capability allowlist.";
             }
@@ -262,10 +276,10 @@ class PolicyEngine
     private function validatePipelineOrder(array $pipeline): array
     {
         $errors = [];
-        $ops    = array_column($pipeline, 'op');
+        $ops = array_column($pipeline, 'op');
 
         // compare must be terminal
-        $comparePositions = array_keys(array_filter($ops, fn($o) => $o === 'compare'));
+        $comparePositions = array_keys(array_filter($ops, fn ($o) => $o === 'compare'));
         foreach ($comparePositions as $pos) {
             if ($pos !== count($ops) - 1) {
                 $errors[] = "'compare' operator must be the terminal (last) operator.";
@@ -273,9 +287,9 @@ class PolicyEngine
         }
 
         // group_by must precede aggregate or moving_avg
-        $groupByPos    = array_search('group_by', $ops);
-        $aggregatePos  = array_search('aggregate', $ops);
-        $movingAvgPos  = array_search('moving_avg', $ops);
+        $groupByPos = array_search('group_by', $ops);
+        $aggregatePos = array_search('aggregate', $ops);
+        $movingAvgPos = array_search('moving_avg', $ops);
 
         if ($groupByPos !== false) {
             if ($groupByPos === count($ops) - 1) {
@@ -338,12 +352,16 @@ class PolicyEngine
     {
         $ops = array_column($config['pipeline'], 'op');
 
-        $hasAggregation    = in_array('aggregate', $ops, true) || in_array('moving_avg', $ops, true);
-        $hasSchedule       = ! empty($config['schedule']);
+        $hasAggregation = in_array('aggregate', $ops, true) || in_array('moving_avg', $ops, true);
+        $hasSchedule = ! empty($config['schedule']);
         $hasExternalAction = ($config['action']['type'] ?? '') === 'webhook';
 
-        if ($hasExternalAction) return 3;
-        if ($hasAggregation || $hasSchedule) return 2;
+        if ($hasExternalAction) {
+            return 3;
+        }
+        if ($hasAggregation || $hasSchedule) {
+            return 2;
+        }
 
         return 1;
     }
@@ -358,20 +376,26 @@ class PolicyEngine
     private function estimateDailyExecutions(string $expression): int
     {
         $parts = preg_split('/\s+/', trim($expression));
-        if (count($parts) !== 5) return 0;
+        if (count($parts) !== 5) {
+            return 0;
+        }
 
         [$minute, $hour] = $parts;
 
         $minuteCount = $minute === '*' ? 60 : (str_contains($minute, ',') ? count(explode(',', $minute)) : 1);
-        $hourCount   = $hour === '*' ? 24 : (str_contains($hour, ',') ? count(explode(',', $hour)) : 1);
+        $hourCount = $hour === '*' ? 24 : (str_contains($hour, ',') ? count(explode(',', $hour)) : 1);
 
         return $minuteCount * $hourCount;
     }
 
     private function parseWindowDays(string $window): ?int
     {
-        if (preg_match('/^(\d+)d$/', $window, $m)) return (int) $m[1];
-        if (preg_match('/^(\d+)w$/', $window, $m)) return (int) $m[1] * 7;
+        if (preg_match('/^(\d+)d$/', $window, $m)) {
+            return (int) $m[1];
+        }
+        if (preg_match('/^(\d+)w$/', $window, $m)) {
+            return (int) $m[1] * 7;
+        }
 
         return null;
     }

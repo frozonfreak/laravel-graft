@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Log;
 class AiSpecGenerator
 {
     private const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-    private const MODEL             = 'claude-haiku-4-5-20251001';
+
+    private const MODEL = 'claude-haiku-4-5-20251001';
 
     public function __construct(
         private readonly string $apiKey = '',
@@ -36,20 +37,21 @@ class AiSpecGenerator
 
         try {
             $response = Http::withHeaders([
-                'x-api-key'         => $this->apiKey ?: config('services.anthropic.key'),
+                'x-api-key' => $this->apiKey ?: config('services.anthropic.key'),
                 'anthropic-version' => '2023-06-01',
-                'content-type'      => 'application/json',
+                'content-type' => 'application/json',
             ])->post(self::ANTHROPIC_API_URL, [
-                'model'      => self::MODEL,
+                'model' => self::MODEL,
                 'max_tokens' => 1024,
-                'system'     => $systemPrompt,
-                'messages'   => [
+                'system' => $systemPrompt,
+                'messages' => [
                     ['role' => 'user', 'content' => $prompt],
                 ],
             ]);
 
             if (! $response->successful()) {
                 Log::error('AiSpecGenerator: API error', ['status' => $response->status()]);
+
                 return ['config' => null, 'error' => 'AI service unavailable.'];
             }
 
@@ -59,23 +61,24 @@ class AiSpecGenerator
 
         } catch (\Throwable $e) {
             Log::error('AiSpecGenerator: exception', ['message' => $e->getMessage()]);
-            return ['config' => null, 'error' => 'AI service error: ' . $e->getMessage()];
+
+            return ['config' => null, 'error' => 'AI service error: '.$e->getMessage()];
         }
     }
 
     private function buildSystemPrompt(Tenant $tenant): string
     {
-        $capabilities   = CapabilityRegistry::activeCapabilityNames();
-        $operatorList   = implode(', ', DslDefinition::OPERATORS);
+        $capabilities = CapabilityRegistry::activeCapabilityNames();
+        $operatorList = implode(', ', DslDefinition::OPERATORS);
         $fieldAllowlist = [];
 
         foreach ($capabilities as $cap) {
-            $fields              = CapabilityRegistry::fieldAllowlistFor($cap);
+            $fields = CapabilityRegistry::fieldAllowlistFor($cap);
             $fieldAllowlist[$cap] = $fields;
         }
 
         $fieldAllowlistJson = json_encode($fieldAllowlist, JSON_PRETTY_PRINT);
-        $capabilityList     = implode(', ', $capabilities);
+        $capabilityList = implode(', ', $capabilities);
 
         return <<<PROMPT
         You are a configuration generator for a farm analytics platform.
@@ -137,7 +140,7 @@ class AiSpecGenerator
         if (isset($decoded['error'])) {
             return [
                 'config' => null,
-                'error'  => $decoded['reason'] ?? $decoded['error'],
+                'error' => $decoded['reason'] ?? $decoded['error'],
             ];
         }
 

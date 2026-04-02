@@ -35,7 +35,7 @@ class PromotionPipeline
 
         DB::transaction(function () use ($candidate, $operatorName, $promotedBy) {
             $currentDslVersion = $this->currentDslVersion();
-            $nextDslVersion    = $this->incrementMinorVersion($currentDslVersion);
+            $nextDslVersion = $this->incrementMinorVersion($currentDslVersion);
 
             // System snapshot before promotion
             FeatureSnapshot::system(
@@ -45,13 +45,13 @@ class PromotionPipeline
 
             // Register new capability
             $capability = CapabilityRegistry::create([
-                'name'              => $operatorName,
-                'ops'               => ['shortcut'],
-                'fields'            => [],
+                'name' => $operatorName,
+                'ops' => ['shortcut'],
+                'fields' => [],
                 'introduced_in_dsl' => $nextDslVersion,
-                'introduced_by'     => "promotion:{$candidate->id}",
-                'status'            => 'active',
-                'description'       => "Promoted from sandbox pattern: {$candidate->pipeline_signature}",
+                'introduced_by' => "promotion:{$candidate->id}",
+                'status' => 'active',
+                'description' => "Promoted from sandbox pattern: {$candidate->pipeline_signature}",
             ]);
 
             // Mark sandbox features that used this pattern as promoted
@@ -60,28 +60,28 @@ class PromotionPipeline
 
             // Record evolution event (immutable)
             EvolutionEvent::record([
-                'type'                    => 'operator_promoted',
-                'operator_name'           => $operatorName,
+                'type' => 'operator_promoted',
+                'operator_name' => $operatorName,
                 'promoted_from_signature' => $candidate->pipeline_signature,
-                'dsl_version_before'      => $currentDslVersion,
-                'dsl_version_after'       => $nextDslVersion,
+                'dsl_version_before' => $currentDslVersion,
+                'dsl_version_after' => $nextDslVersion,
                 'contributing_tenant_count' => $candidate->distinct_tenants,
-                'promoted_by'             => $promotedBy,
-                'notes'                   => "Candidate {$candidate->id} promoted via governance review.",
+                'promoted_by' => $promotedBy,
+                'notes' => "Candidate {$candidate->id} promoted via governance review.",
             ]);
 
             // Update candidate status
             $candidate->update([
-                'status'           => 'promoted',
-                'promoted_at'      => now(),
+                'status' => 'promoted',
+                'promoted_at' => now(),
                 'dsl_version_after' => $nextDslVersion,
             ]);
 
             AuditEvent::log(null, null, 'operator_promoted', $promotedBy, [
-                'operator_name'      => $operatorName,
+                'operator_name' => $operatorName,
                 'dsl_version_before' => $currentDslVersion,
-                'dsl_version_after'  => $nextDslVersion,
-                'candidate_id'       => $candidate->id,
+                'dsl_version_after' => $nextDslVersion,
+                'candidate_id' => $candidate->id,
             ]);
         });
     }
@@ -93,11 +93,11 @@ class PromotionPipeline
     {
         DB::transaction(function () use ($capability, $rollbackBy, $notes) {
             $currentDslVersion = $this->currentDslVersion();
-            $patchVersion      = $this->patchVersion($currentDslVersion);
+            $patchVersion = $this->patchVersion($currentDslVersion);
 
             // Deprecate the capability
             $capability->update([
-                'status'           => 'deprecated',
+                'status' => 'deprecated',
                 'deprecated_in_dsl' => $patchVersion,
             ]);
 
@@ -108,12 +108,12 @@ class PromotionPipeline
 
             // Record un-evolution event
             EvolutionEvent::record([
-                'type'               => 'system_rollback',
-                'operator_name'      => $capability->name,
+                'type' => 'system_rollback',
+                'operator_name' => $capability->name,
                 'dsl_version_before' => $currentDslVersion,
-                'dsl_version_after'  => $patchVersion,
-                'promoted_by'        => $rollbackBy,
-                'notes'              => $notes,
+                'dsl_version_after' => $patchVersion,
+                'promoted_by' => $rollbackBy,
+                'notes' => $notes,
             ]);
 
             // Mark candidate as promoted_then_reverted
@@ -121,9 +121,9 @@ class PromotionPipeline
                 ->update(['status' => 'promoted_then_reverted']);
 
             AuditEvent::log(null, null, 'capability_rolled_back', $rollbackBy, [
-                'capability_name'    => $capability->name,
-                'dsl_version_patch'  => $patchVersion,
-                'notes'              => $notes,
+                'capability_name' => $capability->name,
+                'dsl_version_patch' => $patchVersion,
+                'notes' => $notes,
             ]);
         });
     }
@@ -137,7 +137,7 @@ class PromotionPipeline
 
     private function incrementMinorVersion(string $version): string
     {
-        $parts    = explode('.', $version);
+        $parts = explode('.', $version);
         $parts[1] = (int) ($parts[1] ?? 0) + 1;
 
         return implode('.', $parts);
@@ -145,7 +145,7 @@ class PromotionPipeline
 
     private function patchVersion(string $version): string
     {
-        $parts    = explode('.', $version);
+        $parts = explode('.', $version);
         $parts[2] = (int) ($parts[2] ?? 0) + 1;
 
         return implode('.', $parts);

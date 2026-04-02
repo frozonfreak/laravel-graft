@@ -19,6 +19,6 @@ class ExecutionSignal extends Model
 
     protected $casts = [
         'action_triggered' => 'boolean',
-        'emitted_at'       => 'datetime',
+        'emitted_at' => 'datetime',
     ];
 }

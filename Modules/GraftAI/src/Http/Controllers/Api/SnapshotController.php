@@ -23,7 +23,7 @@ class SnapshotController extends Controller
     {
         $request->validate(['label' => 'nullable|string|max:255']);
 
-        $tenant     = $this->resolveTenant($request);
+        $tenant = $this->resolveTenant($request);
         $dslVersion = CapabilityRegistry::orderByDesc('introduced_in_dsl')
             ->value('introduced_in_dsl') ?? DslDefinition::CURRENT_VERSION;
 
@@ -39,7 +39,7 @@ class SnapshotController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $tenant    = $this->resolveTenant($request);
+        $tenant = $this->resolveTenant($request);
         $snapshots = FeatureSnapshot::where('tenant_id', $tenant->id)
             ->where('snapshot_type', 'tenant')
             ->orderByDesc('created_at')

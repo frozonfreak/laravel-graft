@@ -37,12 +37,12 @@ class GovernanceDemoController extends Controller
 
             return [
                 'example_features' => $exampleFeatures,
-                'signal_series'    => $signalSeries,
-                'data_source'      => $firstFeature?->data_source ?? '—',
-                'label'            => $firstFeature
+                'signal_series' => $signalSeries,
+                'data_source' => $firstFeature?->data_source ?? '—',
+                'label' => $firstFeature
                     ? $this->summarizePipeline($firstFeature->data_source, $firstFeature->pipeline)
                     : 'Unknown pattern',
-                'action_label'     => $firstFeature
+                'action_label' => $firstFeature
                     ? $this->summarizeAction($firstFeature->action ?? [])
                     : null,
             ];
@@ -55,11 +55,11 @@ class GovernanceDemoController extends Controller
         $dslVersion = $capabilities->last()?->introduced_in_dsl ?? DslDefinition::CURRENT_VERSION;
 
         $stats = [
-            'pending_candidates'  => $candidates->where('status', 'pending')->count(),
+            'pending_candidates' => $candidates->where('status', 'pending')->count(),
             'promoted_this_month' => EvolutionEvent::where('type', 'operator_promoted')
                 ->whereMonth('promoted_at', now()->month)
                 ->count(),
-            'total_capabilities'  => $capabilities->where('status', 'active')->count(),
+            'total_capabilities' => $capabilities->where('status', 'active')->count(),
         ];
 
         return view('graftai::governance.index', compact(
@@ -69,33 +69,35 @@ class GovernanceDemoController extends Controller
 
     private function summarizePipeline(string $dataSource, array $pipeline): string
     {
-        $parts       = [];
+        $parts = [];
         $filterValues = [];
         $hasMovingAvg = false;
         $movingAvgWindow = null;
-        $compareType  = null;
+        $compareType = null;
         $compareThreshold = null;
-        $aggregateFn  = null;
-        $metric       = null;
+        $aggregateFn = null;
+        $metric = null;
 
         foreach ($pipeline as $step) {
             switch ($step['op']) {
                 case 'filter':
                     $val = $step['value'] ?? '';
-                    if (is_array($val)) $val = implode(', ', $val);
+                    if (is_array($val)) {
+                        $val = implode(', ', $val);
+                    }
                     $filterValues[] = $val;
                     break;
                 case 'moving_avg':
-                    $hasMovingAvg    = true;
+                    $hasMovingAvg = true;
                     $movingAvgWindow = $step['window'] ?? null;
-                    $metric          = $step['metric'] ?? null;
+                    $metric = $step['metric'] ?? null;
                     break;
                 case 'aggregate':
                     $aggregateFn = $step['function'] ?? null;
-                    $metric      = $step['metric'] ?? null;
+                    $metric = $step['metric'] ?? null;
                     break;
                 case 'compare':
-                    $compareType      = $step['type'] ?? null;
+                    $compareType = $step['type'] ?? null;
                     $compareThreshold = $step['threshold'] ?? null;
                     break;
             }
@@ -103,24 +105,24 @@ class GovernanceDemoController extends Controller
 
         if ($hasMovingAvg && $compareType) {
             $direction = str_contains($compareType, 'drop') ? 'drop' : 'rise';
-            $parts[]   = "{$movingAvgWindow} moving avg";
-            $parts[]   = "{$direction} >{$compareThreshold}%";
-            $parts[]   = "alert";
+            $parts[] = "{$movingAvgWindow} moving avg";
+            $parts[] = "{$direction} >{$compareThreshold}%";
+            $parts[] = 'alert';
         } elseif ($aggregateFn && $metric) {
             $parts[] = "{$aggregateFn} of {$metric}";
         } elseif (count($pipeline) === 2 && $pipeline[1]['op'] === 'sort') {
-            $dir     = $pipeline[1]['direction'] ?? 'desc';
-            $field   = $pipeline[1]['field'] ?? '';
-            $limit   = $pipeline[1]['limit'] ?? '';
-            $parts[] = "top" . ($limit ? " {$limit}" : '') . " by {$field} ({$dir})";
+            $dir = $pipeline[1]['direction'] ?? 'desc';
+            $field = $pipeline[1]['field'] ?? '';
+            $limit = $pipeline[1]['limit'] ?? '';
+            $parts[] = 'top'.($limit ? " {$limit}" : '')." by {$field} ({$dir})";
         } else {
             $parts[] = implode(' → ', array_column($pipeline, 'op'));
         }
 
-        $label = implode(' ', $parts) . ' on ' . str_replace('_', ' ', $dataSource);
+        $label = implode(' ', $parts).' on '.str_replace('_', ' ', $dataSource);
 
         if ($filterValues) {
-            $label .= ' (' . implode(', ', array_unique($filterValues)) . ')';
+            $label .= ' ('.implode(', ', array_unique($filterValues)).')';
         }
 
         return ucfirst($label);
@@ -128,13 +130,15 @@ class GovernanceDemoController extends Controller
 
     private function summarizeAction(array $action): ?string
     {
-        if (empty($action)) return null;
+        if (empty($action)) {
+            return null;
+        }
 
-        $type    = $action['type'] ?? 'notification';
+        $type = $action['type'] ?? 'notification';
         $channel = $action['channel'] ?? '';
 
         if ($type === 'notification' && $channel) {
-            return 'Sends ' . strtoupper($channel) . ' notification';
+            return 'Sends '.strtoupper($channel).' notification';
         }
 
         return ucfirst($type);

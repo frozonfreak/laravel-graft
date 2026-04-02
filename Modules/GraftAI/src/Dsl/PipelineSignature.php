@@ -14,10 +14,11 @@ class PipelineSignature
     {
         $canonical = [
             'data_source' => $dataSource,
-            'ops'         => array_map(fn($step) => self::canonicalizeStep($step), $pipeline),
+            'ops' => array_map(fn ($step) => self::canonicalizeStep($step), $pipeline),
         ];
 
         ksort($canonical);
+
         return hash('sha256', json_encode($canonical, JSON_UNESCAPED_UNICODE));
     }
 
@@ -28,29 +29,29 @@ class PipelineSignature
         // Keep structural keys (enums, window size) but strip concrete values
         return match ($op) {
             'filter' => [
-                'op'      => 'filter',
+                'op' => 'filter',
                 'op_type' => $step['op_type'],
                 // strip: field, value
             ],
             'group_by' => [
-                'op'       => 'group_by',
+                'op' => 'group_by',
                 'truncate' => $step['truncate'] ?? null,
             ],
             'aggregate' => [
-                'op'       => 'aggregate',
+                'op' => 'aggregate',
                 'function' => $step['function'],
             ],
             'moving_avg' => [
-                'op'     => 'moving_avg',
+                'op' => 'moving_avg',
                 'window' => $step['window'],
             ],
             'compare' => [
-                'op'       => 'compare',
-                'type'     => $step['type'],
+                'op' => 'compare',
+                'type' => $step['type'],
                 'baseline' => $step['baseline'] ?? 'previous_window',
             ],
             'sort' => [
-                'op'        => 'sort',
+                'op' => 'sort',
                 'direction' => $step['direction'],
             ],
             default => ['op' => $op],

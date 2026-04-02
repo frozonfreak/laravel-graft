@@ -15,12 +15,12 @@ class DslDefinition
     ];
 
     public const OPERATOR_WEIGHTS = [
-        'filter'     => 1,
-        'sort'       => 1,
-        'group_by'   => 2,
-        'aggregate'  => 3,
+        'filter' => 1,
+        'sort' => 1,
+        'group_by' => 2,
+        'aggregate' => 3,
         'moving_avg' => 5,
-        'compare'    => 2,
+        'compare' => 2,
     ];
 
     public const FILTER_OP_TYPES = [
@@ -44,9 +44,13 @@ class DslDefinition
     public const GROUP_BY_TRUNCATIONS = ['day', 'week', 'month'];
 
     public const MAX_PIPELINE_LENGTH = 8;
+
     public const MIN_PIPELINE_LENGTH = 1;
+
     public const MAX_MOVING_AVG_WINDOW_DAYS = 90;
+
     public const MAX_FILTER_ARRAY_LENGTH = 50;
+
     public const MAX_SORT_LIMIT = 1000;
 
     /** Operator schemas indexed by operator name */

@@ -20,13 +20,13 @@ class FeatureConfig extends Model
     ];
 
     protected $casts = [
-        'pipeline'               => 'array',
-        'action'                 => 'array',
-        'schedule'               => 'array',
-        'cost_estimate'          => 'array',
+        'pipeline' => 'array',
+        'action' => 'array',
+        'schedule' => 'array',
+        'cost_estimate' => 'array',
         'contributes_to_evolution' => 'boolean',
-        'promoted_to_core'       => 'boolean',
-        'last_executed_at'       => 'datetime',
+        'promoted_to_core' => 'boolean',
+        'last_executed_at' => 'datetime',
     ];
 
     public function tenant(): BelongsTo

@@ -29,10 +29,10 @@ return [
     */
 
     'limits' => [
-        'max_cost_score'   => 150,
-        'max_daily_runs'   => 4,
-        'max_scheduled'    => 20,
-        'max_concurrent'   => 5,
+        'max_cost_score' => 150,
+        'max_daily_runs' => 4,
+        'max_scheduled' => 20,
+        'max_concurrent' => 5,
     ],
 
     /*
@@ -46,10 +46,10 @@ return [
     */
 
     'promotion' => [
-        'min_tenants'       => 3,    // Distinct opted-in tenants using the shape
-        'min_score'         => 200,  // Σ min(per_feature_count, 500)
-        'min_features'      => 5,    // Distinct features with this shape
-        'min_success_rate'  => 0.90, // 90% execution success rate
+        'min_tenants' => 3,    // Distinct opted-in tenants using the shape
+        'min_score' => 200,  // Σ min(per_feature_count, 500)
+        'min_features' => 5,    // Distinct features with this shape
+        'min_success_rate' => 0.90, // 90% execution success rate
     ],
 
     /*
@@ -64,7 +64,7 @@ return [
 
     'queue' => [
         'connection' => env('GRAFTAI_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'database')),
-        'name'       => env('GRAFTAI_QUEUE', 'graftai'),
+        'name' => env('GRAFTAI_QUEUE', 'graftai'),
     ],
 
     /*

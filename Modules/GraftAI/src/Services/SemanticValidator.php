@@ -2,8 +2,6 @@
 
 namespace GraftAI\Services;
 
-use GraftAI\Dsl\DslDefinition;
-
 /**
  * Semantic Validator — re-reads the DSL config and produces a
  * plain-language summary for user confirmation.
@@ -35,21 +33,21 @@ class SemanticValidator
             $parts[] = $this->describeAction($config['action']);
         }
 
-        return implode(' → ', array_filter($parts)) . '.';
+        return implode(' → ', array_filter($parts)).'.';
     }
 
     private function describeSchedule(array $schedule): string
     {
-        $expr     = $schedule['expression'] ?? '';
+        $expr = $schedule['expression'] ?? '';
         $timezone = $schedule['timezone'] ?? 'UTC';
 
         $readableMap = [
-            '0 8 * * *'   => 'Every day at 8am',
-            '0 * * * *'   => 'Every hour',
-            '* * * * *'   => 'Every minute',
-            '0 0 * * *'   => 'Every day at midnight',
-            '0 0 * * 1'   => 'Every Monday at midnight',
-            '0 12 * * *'  => 'Every day at noon',
+            '0 8 * * *' => 'Every day at 8am',
+            '0 * * * *' => 'Every hour',
+            '* * * * *' => 'Every minute',
+            '0 0 * * *' => 'Every day at midnight',
+            '0 0 * * 1' => 'Every Monday at midnight',
+            '0 12 * * *' => 'Every day at noon',
         ];
 
         $readable = $readableMap[$expr] ?? "On schedule ({$expr})";
@@ -64,7 +62,7 @@ class SemanticValidator
                 'filter where %s %s %s',
                 $step['field'],
                 $step['op_type'],
-                is_array($step['value']) ? '[' . implode(', ', $step['value']) . ']' : $step['value']
+                is_array($step['value']) ? '['.implode(', ', $step['value']).']' : $step['value']
             ),
             'group_by' => sprintf(
                 'group by %s%s',
@@ -104,8 +102,9 @@ class SemanticValidator
         $type = $action['type'] ?? 'notification';
 
         if ($type === 'notification') {
-            $channel    = $action['channel'] ?? 'in_app';
+            $channel = $action['channel'] ?? 'in_app';
             $recipients = $action['recipients'] ?? 'tenant_owner';
+
             return "send {$channel} notification to {$recipients}";
         }
 

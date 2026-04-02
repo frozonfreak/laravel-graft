@@ -28,7 +28,7 @@ use Illuminate\Routing\Controller;
 class FeatureController extends Controller
 {
     public function __construct(
-        private readonly PolicyEngine    $policy,
+        private readonly PolicyEngine $policy,
         private readonly AiSpecGenerator $aiGenerator,
         private readonly SemanticValidator $semanticValidator,
     ) {}
@@ -49,19 +49,19 @@ class FeatureController extends Controller
             return response()->json(['error' => $result['error']], 422);
         }
 
-        $config  = $result['config'];
+        $config = $result['config'];
         $summary = $this->semanticValidator->summarize($config);
 
         // Run Stage 1 to surface any policy errors before confirmation
         $stage1 = $this->policy->stage1($config, $tenant);
 
         return response()->json([
-            'config'          => $config,
+            'config' => $config,
             'semantic_summary' => $summary,
-            'policy'          => [
-                'ok'           => $stage1['ok'],
-                'errors'       => $stage1['errors'],
-                'trust_tier'   => $stage1['trust_tier'],
+            'policy' => [
+                'ok' => $stage1['ok'],
+                'errors' => $stage1['errors'],
+                'trust_tier' => $stage1['trust_tier'],
                 'cost_estimate' => $stage1['cost_estimate'],
             ],
         ]);
@@ -74,7 +74,7 @@ class FeatureController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'config'   => 'required|array',
+            'config' => 'required|array',
             'confirmed' => 'required|boolean|accepted',
         ]);
 
@@ -87,13 +87,13 @@ class FeatureController extends Controller
             return response()->json(['errors' => $stage1['errors']], 422);
         }
 
-        $trustTier   = $stage1['trust_tier'];
+        $trustTier = $stage1['trust_tier'];
         $costEstimate = $stage1['cost_estimate'];
 
         // Cost acknowledgment required for 'high' tier
         if ($costEstimate['tier'] === 'high' && ! $request->boolean('cost_acknowledged')) {
             return response()->json([
-                'error'        => 'Cost acknowledgment required.',
+                'error' => 'Cost acknowledgment required.',
                 'cost_estimate' => $costEstimate,
             ], 422);
         }
@@ -103,26 +103,26 @@ class FeatureController extends Controller
         $status = $trustTier >= 3 ? 'pending_approval' : 'active';
 
         $feature = FeatureConfig::create([
-            'tenant_id'              => $tenant->id,
-            'dsl_version'            => $config['dsl_version'] ?? '1.0',
-            'feature_version'        => 1,
-            'lifecycle_stage'        => 'sandbox',
-            'type'                   => $config['type'],
-            'data_source'            => $config['data_source'],
-            'pipeline'               => $config['pipeline'],
-            'action'                 => $config['action'],
-            'schedule'               => $config['schedule'] ?? null,
-            'status'                 => $status,
-            'trust_tier'             => $trustTier,
-            'cost_estimate'          => $costEstimate,
-            'pipeline_signature'     => $signature,
+            'tenant_id' => $tenant->id,
+            'dsl_version' => $config['dsl_version'] ?? '1.0',
+            'feature_version' => 1,
+            'lifecycle_stage' => 'sandbox',
+            'type' => $config['type'],
+            'data_source' => $config['data_source'],
+            'pipeline' => $config['pipeline'],
+            'action' => $config['action'],
+            'schedule' => $config['schedule'] ?? null,
+            'status' => $status,
+            'trust_tier' => $trustTier,
+            'cost_estimate' => $costEstimate,
+            'pipeline_signature' => $signature,
             'contributes_to_evolution' => $tenant->contributesToEvolution(),
-            'created_by'             => 'ai',
+            'created_by' => 'ai',
         ]);
 
         AuditEvent::log($tenant->id, $feature->id, 'feature_created', 'user', [
             'trust_tier' => $trustTier,
-            'status'     => $status,
+            'status' => $status,
         ]);
 
         return response()->json($feature, 201);
@@ -130,7 +130,7 @@ class FeatureController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $tenant   = $this->resolveTenant($request);
+        $tenant = $this->resolveTenant($request);
         $features = FeatureConfig::where('tenant_id', $tenant->id)
             ->orderByDesc('created_at')
             ->get();
@@ -140,7 +140,7 @@ class FeatureController extends Controller
 
     public function show(Request $request, string $id): JsonResponse
     {
-        $tenant  = $this->resolveTenant($request);
+        $tenant = $this->resolveTenant($request);
         $feature = FeatureConfig::where('id', $id)
             ->where('tenant_id', $tenant->id)
             ->firstOrFail();
@@ -150,7 +150,7 @@ class FeatureController extends Controller
 
     public function destroy(Request $request, string $id): JsonResponse
     {
-        $tenant  = $this->resolveTenant($request);
+        $tenant = $this->resolveTenant($request);
         $feature = FeatureConfig::where('id', $id)
             ->where('tenant_id', $tenant->id)
             ->firstOrFail();
@@ -169,8 +169,8 @@ class FeatureController extends Controller
     {
         $request->validate(['snapshot_id' => 'required|uuid']);
 
-        $tenant   = $this->resolveTenant($request);
-        $feature  = FeatureConfig::where('id', $id)
+        $tenant = $this->resolveTenant($request);
+        $feature = FeatureConfig::where('id', $id)
             ->where('tenant_id', $tenant->id)
             ->firstOrFail();
 

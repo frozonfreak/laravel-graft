@@ -2,6 +2,7 @@
 
 namespace GraftAI\Console\Commands;
 
+use Carbon\Carbon;
 use GraftAI\Jobs\ExecuteFeature;
 use GraftAI\Models\FeatureConfig;
 use Illuminate\Console\Command;
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Cache;
  */
 class DispatchScheduledFeatures extends Command
 {
-    protected $signature   = 'features:dispatch-scheduled';
+    protected $signature = 'features:dispatch-scheduled';
+
     protected $description = 'Dispatch queued jobs for all active scheduled features whose cron is due.';
 
     public function handle(): int
@@ -61,13 +63,17 @@ class DispatchScheduledFeatures extends Command
         return self::SUCCESS;
     }
 
-    private function isDue(array $schedule, \Carbon\Carbon $now): bool
+    private function isDue(array $schedule, Carbon $now): bool
     {
         $expression = $schedule['expression'] ?? null;
-        if (! $expression) return false;
+        if (! $expression) {
+            return false;
+        }
 
         $parts = preg_split('/\s+/', trim($expression));
-        if (count($parts) !== 5) return false;
+        if (count($parts) !== 5) {
+            return false;
+        }
 
         [$minute, $hour, $dom, $month, $dow] = $parts;
 
@@ -80,7 +86,9 @@ class DispatchScheduledFeatures extends Command
 
     private function matchesCronPart(string $part, int $value): bool
     {
-        if ($part === '*') return true;
+        if ($part === '*') {
+            return true;
+        }
 
         if (str_contains($part, ',')) {
             return in_array($value, array_map('intval', explode(',', $part)), true);
@@ -88,12 +96,14 @@ class DispatchScheduledFeatures extends Command
 
         if (str_contains($part, '-')) {
             [$from, $to] = array_map('intval', explode('-', $part));
+
             return $value >= $from && $value <= $to;
         }
 
         if (str_contains($part, '/')) {
             [$range, $step] = explode('/', $part);
             $step = (int) $step;
+
             return $step > 0 && $value % $step === 0;
         }
 

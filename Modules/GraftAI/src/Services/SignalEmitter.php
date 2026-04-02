@@ -23,16 +23,16 @@ class SignalEmitter
         }
 
         ExecutionSignal::create([
-            'feature_id'        => $feature->id,
+            'feature_id' => $feature->id,
             'pipeline_signature' => $feature->pipeline_signature,
             // tenant_id deliberately omitted — anonymized
-            'dsl_version'       => $feature->dsl_version,
-            'data_source'       => $feature->data_source,
+            'dsl_version' => $feature->dsl_version,
+            'data_source' => $feature->data_source,
             'execution_outcome' => $execution->status,
-            'action_triggered'  => null,
-            'execution_ms'      => $execution->execution_ms,
-            'rows_scanned'      => $execution->rows_scanned,
-            'emitted_at'        => now(),
+            'action_triggered' => null,
+            'execution_ms' => $execution->execution_ms,
+            'rows_scanned' => $execution->rows_scanned,
+            'emitted_at' => now(),
         ]);
 
         $execution->update(['signal_emitted' => true]);
@@ -52,15 +52,15 @@ class SignalEmitter
         }
 
         ExecutionSignal::create([
-            'feature_id'        => $feature->id,
+            'feature_id' => $feature->id,
             'pipeline_signature' => $feature->pipeline_signature,
-            'dsl_version'       => $feature->dsl_version,
-            'data_source'       => $feature->data_source,
+            'dsl_version' => $feature->dsl_version,
+            'data_source' => $feature->data_source,
             'execution_outcome' => $execution->status,
-            'action_triggered'  => $actionTriggered,
-            'execution_ms'      => $execution->execution_ms,
-            'rows_scanned'      => $execution->rows_scanned,
-            'emitted_at'        => now(),
+            'action_triggered' => $actionTriggered,
+            'execution_ms' => $execution->execution_ms,
+            'rows_scanned' => $execution->rows_scanned,
+            'emitted_at' => now(),
         ]);
 
         $execution->update(['signal_emitted' => true]);

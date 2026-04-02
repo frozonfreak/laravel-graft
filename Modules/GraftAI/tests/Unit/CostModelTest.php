@@ -3,7 +3,7 @@
 use GraftAI\Dsl\CostModel;
 
 it('returns a complete cost estimate structure', function () {
-    $model = new CostModel();
+    $model = new CostModel;
     $result = $model->estimate('crop_yield', [
         ['op' => 'filter', 'field' => 'status', 'op_type' => 'eq', 'value' => 'active'],
     ], 'tenant-1');
@@ -16,7 +16,7 @@ it('returns a complete cost estimate structure', function () {
 });
 
 it('scores a moving_avg step higher than a filter step', function () {
-    $model = new CostModel();
+    $model = new CostModel;
 
     $filterResult = $model->estimate('crop_yield', [
         ['op' => 'filter', 'field' => 'status', 'op_type' => 'eq', 'value' => 'active'],
@@ -30,7 +30,7 @@ it('scores a moving_avg step higher than a filter step', function () {
 });
 
 it('returns rejected tier for very expensive pipelines', function () {
-    $model = new CostModel();
+    $model = new CostModel;
 
     $tier = $model->scoreTier(200);
 
@@ -38,7 +38,7 @@ it('returns rejected tier for very expensive pipelines', function () {
 });
 
 it('maps score boundaries to correct tiers', function () {
-    $model = new CostModel();
+    $model = new CostModel;
 
     expect($model->scoreTier(0))->toBe('low');
     expect($model->scoreTier(20))->toBe('low');

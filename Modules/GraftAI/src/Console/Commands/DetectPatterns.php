@@ -4,6 +4,7 @@ namespace GraftAI\Console\Commands;
 
 use GraftAI\Models\PromotionCandidate;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -20,14 +21,19 @@ use Illuminate\Support\Facades\DB;
  */
 class DetectPatterns extends Command
 {
-    protected $signature   = 'evolution:detect-patterns';
+    protected $signature = 'evolution:detect-patterns';
+
     protected $description = 'Run the pattern detector to identify promotion candidates from execution signals.';
 
-    private const MIN_DISTINCT_TENANTS  = 3;
-    private const MIN_WEIGHTED_SCORE    = 200;
+    private const MIN_DISTINCT_TENANTS = 3;
+
+    private const MIN_WEIGHTED_SCORE = 200;
+
     private const MIN_DISTINCT_FEATURES = 5;
-    private const MIN_SUCCESS_RATE      = 0.90;
-    private const EXEC_COUNT_CAP        = 500;
+
+    private const MIN_SUCCESS_RATE = 0.90;
+
+    private const EXEC_COUNT_CAP = 500;
 
     public function handle(): int
     {
@@ -45,22 +51,22 @@ class DetectPatterns extends Command
 
             if ($existing) {
                 $existing->update([
-                    'distinct_tenants'    => $row->distinct_tenants,
-                    'distinct_features'   => $row->distinct_features,
+                    'distinct_tenants' => $row->distinct_tenants,
+                    'distinct_features' => $row->distinct_features,
                     'weighted_exec_score' => $row->weighted_exec_score,
-                    'success_rate'        => $row->avg_success_rate,
-                    'risk_tier'           => $riskTier,
+                    'success_rate' => $row->avg_success_rate,
+                    'risk_tier' => $riskTier,
                 ]);
                 $updated++;
             } else {
                 $candidate = PromotionCandidate::create([
-                    'pipeline_signature'  => $row->pipeline_signature,
-                    'distinct_tenants'    => $row->distinct_tenants,
-                    'distinct_features'   => $row->distinct_features,
+                    'pipeline_signature' => $row->pipeline_signature,
+                    'distinct_tenants' => $row->distinct_tenants,
+                    'distinct_features' => $row->distinct_features,
                     'weighted_exec_score' => $row->weighted_exec_score,
-                    'success_rate'        => $row->avg_success_rate,
-                    'risk_tier'           => $riskTier,
-                    'status'              => 'pending',
+                    'success_rate' => $row->avg_success_rate,
+                    'risk_tier' => $riskTier,
+                    'status' => 'pending',
                 ]);
 
                 if ($candidate->isAutoApprovable()) {
@@ -77,14 +83,14 @@ class DetectPatterns extends Command
         return self::SUCCESS;
     }
 
-    private function queryCandidates(): \Illuminate\Support\Collection
+    private function queryCandidates(): Collection
     {
         return DB::table('execution_signals as es')
             ->join(
                 DB::raw('(
                     SELECT feature_id,
                            pipeline_signature,
-                           LEAST(COUNT(*), ' . self::EXEC_COUNT_CAP . ') AS capped_count,
+                           LEAST(COUNT(*), '.self::EXEC_COUNT_CAP.') AS capped_count,
                            AVG(CASE WHEN execution_outcome = \'success\' THEN 1.0 ELSE 0.0 END) AS feature_success_rate
                     FROM execution_signals
                     GROUP BY feature_id, pipeline_signature

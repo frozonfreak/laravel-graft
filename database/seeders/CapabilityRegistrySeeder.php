@@ -14,40 +14,40 @@ class CapabilityRegistrySeeder extends Seeder
     {
         $capabilities = [
             [
-                'name'              => 'crop_prices',
-                'ops'               => ['read', 'aggregate'],
-                'fields'            => [
+                'name' => 'crop_prices',
+                'ops' => ['read', 'aggregate'],
+                'fields' => [
                     'crop', 'date', 'market',
                     'modal_price', 'min_price', 'max_price', 'arrivals_qty',
                 ],
                 'introduced_in_dsl' => '1.0',
-                'introduced_by'     => 'core',
-                'status'            => 'active',
-                'description'       => 'Daily crop market prices — APMC/mandi data.',
+                'introduced_by' => 'core',
+                'status' => 'active',
+                'description' => 'Daily crop market prices — APMC/mandi data.',
             ],
             [
-                'name'              => 'weather_data',
-                'ops'               => ['read'],
-                'fields'            => [
+                'name' => 'weather_data',
+                'ops' => ['read'],
+                'fields' => [
                     'date', 'district', 'rainfall_mm',
                     'temp_max_c', 'temp_min_c', 'humidity_pct',
                 ],
                 'introduced_in_dsl' => '1.0',
-                'introduced_by'     => 'core',
-                'status'            => 'active',
-                'description'       => 'Daily weather observations per district.',
+                'introduced_by' => 'core',
+                'status' => 'active',
+                'description' => 'Daily weather observations per district.',
             ],
             [
-                'name'              => 'soil_health',
-                'ops'               => ['read'],
-                'fields'            => [
+                'name' => 'soil_health',
+                'ops' => ['read'],
+                'fields' => [
                     'date', 'farm_id', 'ph', 'nitrogen_ppm',
                     'phosphorus_ppm', 'potassium_ppm', 'organic_matter_pct',
                 ],
                 'introduced_in_dsl' => '1.0',
-                'introduced_by'     => 'core',
-                'status'            => 'active',
-                'description'       => 'Soil health card readings per farm.',
+                'introduced_by' => 'core',
+                'status' => 'active',
+                'description' => 'Soil health card readings per farm.',
             ],
         ];
 

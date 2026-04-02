@@ -2,8 +2,6 @@
 
 namespace GraftAI\Dsl;
 
-use GraftAI\Models\FeatureConfig;
-
 /**
  * Cost model: score = Σ(operator_weight × row_estimate × window_multiplier)
  *
@@ -16,23 +14,23 @@ use GraftAI\Models\FeatureConfig;
 class CostModel
 {
     public const TIERS = [
-        20  => 'low',
-        60  => 'medium',
+        20 => 'low',
+        60 => 'medium',
         150 => 'high',
     ];
 
     public function estimate(string $dataSource, array $pipeline, string $tenantId): array
     {
         $rowEstimate = $this->estimateRows($dataSource, $tenantId, $pipeline);
-        $score       = 0;
+        $score = 0;
 
         foreach ($pipeline as $step) {
-            $op     = $step['op'];
+            $op = $step['op'];
             $weight = DslDefinition::OPERATOR_WEIGHTS[$op] ?? 1;
 
             $windowMultiplier = 1.0;
             if ($op === 'moving_avg' && isset($step['window'])) {
-                $days             = $this->parseWindowDays($step['window']) ?? 7;
+                $days = $this->parseWindowDays($step['window']) ?? 7;
                 $windowMultiplier = $days / 7;
             }
 
@@ -42,18 +40,24 @@ class CostModel
         $tier = $this->scoreTier((int) $score);
 
         return [
-            'score'          => (int) $score,
-            'tier'           => $tier,
+            'score' => (int) $score,
+            'tier' => $tier,
             'estimated_rows' => $rowEstimate,
-            'computed_at'    => now()->toIso8601String(),
+            'computed_at' => now()->toIso8601String(),
         ];
     }
 
     public function scoreTier(int $score): string
     {
-        if ($score <= 20)  return 'low';
-        if ($score <= 60)  return 'medium';
-        if ($score <= 150) return 'high';
+        if ($score <= 20) {
+            return 'low';
+        }
+        if ($score <= 60) {
+            return 'medium';
+        }
+        if ($score <= 150) {
+            return 'high';
+        }
 
         return 'rejected';
     }
@@ -78,8 +82,12 @@ class CostModel
 
     private function parseWindowDays(string $window): ?int
     {
-        if (preg_match('/^(\d+)d$/', $window, $m)) return (int) $m[1];
-        if (preg_match('/^(\d+)w$/', $window, $m)) return (int) $m[1] * 7;
+        if (preg_match('/^(\d+)d$/', $window, $m)) {
+            return (int) $m[1];
+        }
+        if (preg_match('/^(\d+)w$/', $window, $m)) {
+            return (int) $m[1] * 7;
+        }
 
         return null;
     }

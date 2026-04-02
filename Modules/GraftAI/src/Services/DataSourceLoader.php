@@ -18,7 +18,7 @@ class DataSourceLoader
      * Returns the raw dataset for a data source, scoped to tenant.
      *
      * @param  string  $dataSource  Active capability name (e.g. 'crop_prices')
-     * @param  string  $tenantId    From execution context — never from config
+     * @param  string  $tenantId  From execution context — never from config
      */
     public function load(string $dataSource, string $tenantId): Collection
     {
@@ -26,7 +26,7 @@ class DataSourceLoader
             ->where('status', 'active')
             ->firstOrFail();
 
-        $method = 'load' . str_replace('_', '', ucwords($dataSource, '_'));
+        $method = 'load'.str_replace('_', '', ucwords($dataSource, '_'));
 
         if (method_exists($this, $method)) {
             return $this->{$method}($tenantId, $capability->fields);

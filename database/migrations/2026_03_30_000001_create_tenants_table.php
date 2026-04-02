@@ -14,9 +14,9 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('status')->default('active'); // active | suspended | in_arrears
             $table->json('evolution_settings')->default(json_encode([
-                'contribute_to_pattern_detection'   => false,
+                'contribute_to_pattern_detection' => false,
                 'receive_promoted_feature_notifications' => true,
-                'auto_migrate_promoted_configs'     => false,
+                'auto_migrate_promoted_configs' => false,
             ]));
             $table->timestamps();
         });

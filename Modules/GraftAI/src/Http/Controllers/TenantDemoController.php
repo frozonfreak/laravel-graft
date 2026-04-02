@@ -21,10 +21,10 @@ class TenantDemoController extends Controller
         }
 
         $activeTenantId = $request->input('tenant_id', $tenants->first()->id);
-        $activeTenant   = $tenants->firstWhere('id', $activeTenantId) ?? $tenants->first();
+        $activeTenant = $tenants->firstWhere('id', $activeTenantId) ?? $tenants->first();
 
         $features = FeatureConfig::where('tenant_id', $activeTenant->id)
-            ->with(['executions' => fn($q) => $q->latest('started_at')->limit(20)])
+            ->with(['executions' => fn ($q) => $q->latest('started_at')->limit(20)])
             ->orderByDesc('created_at')
             ->get();
 
@@ -40,7 +40,7 @@ class TenantDemoController extends Controller
 
     public function archive(Request $request, string $id)
     {
-        $tenant  = Tenant::findOrFail($request->input('tenant_id', ''));
+        $tenant = Tenant::findOrFail($request->input('tenant_id', ''));
         $feature = FeatureConfig::where('id', $id)
             ->where('tenant_id', $tenant->id)
             ->firstOrFail();
