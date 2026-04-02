@@ -7,9 +7,9 @@
   <img src="https://img.shields.io/badge/Laravel-13%2B-red" alt="Laravel 13+">
 </p>
 
-A Laravel SaaS skeleton with the **GraftAI** module — an AI-driven, self-evolving automation engine. Tenants describe what they want in plain English, the AI converts it into a live data pipeline, and the platform learns from usage to evolve its own capabilities over time.
+A Laravel SaaS skeleton with the **GraftAI** package — an AI-driven, self-evolving automation engine. Tenants describe what they want in plain English, the AI converts it into a live data pipeline, and the platform learns from usage to evolve its own capabilities over time.
 
-> This repo is the full Laravel application. The GraftAI engine lives in [`Modules/GraftAI/`](Modules/GraftAI/README.md).
+> This repo is the full Laravel demo application. The GraftAI package lives in [`Modules/GraftAI/`](Modules/GraftAI/README.md) and is loaded via a Composer path repository.
 
 ---
 
@@ -22,7 +22,7 @@ A Laravel SaaS skeleton with the **GraftAI** module — an AI-driven, self-evolv
 - Governance dashboard: review, approve, and promote a candidate into a named, versioned platform capability
 - The platform literally evolves itself — no new migrations, no new deployments
 
-**Read the full module docs:** [Modules/GraftAI/README.md](Modules/GraftAI/README.md)
+**Read the full package docs:** [Modules/GraftAI/README.md](Modules/GraftAI/README.md)
 
 ---
 
@@ -38,6 +38,8 @@ A Laravel SaaS skeleton with the **GraftAI** module — an AI-driven, self-evolv
 
 ## Quick start
 
+### 1. Clone and install
+
 ```bash
 git clone https://github.com/frozonfreak/laravel-graft.git
 cd laravel-graft
@@ -45,27 +47,101 @@ cd laravel-graft
 composer install
 cp .env.example .env
 php artisan key:generate
-
-# Add your Anthropic key to .env:
-# ANTHROPIC_API_KEY=sk-ant-...
-
-php artisan migrate
-php artisan db:seed --class="Modules\GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
-
-npm install && npm run build
 ```
 
-Then start all processes in one command:
+`composer install` resolves `frozonfreak/graftai` from the local path repository at `Modules/GraftAI/` and junctions it into `vendor/`. No separate clone or symlink step needed.
+
+### 2. Configure
+
+Add your Anthropic API key to `.env`:
+
+```env
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### 3. Migrate and seed
 
 ```bash
-composer dev
+php artisan migrate
+
+# Optional: load demo tenants, features, signals, and promotion candidates
+php artisan db:seed --class="GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
 ```
 
-This starts the HTTP server, queue worker, and Vite dev server concurrently.
+### 4. Build assets and start
+
+```bash
+npm install && npm run build
+
+composer dev   # starts HTTP server, queue worker, and Vite dev server
+```
 
 Visit:
 - `http://localhost:8000` — Tenant dashboard
 - `http://localhost:8000/governance` — Governance dashboard
+
+---
+
+## Installing the package into your own Laravel app
+
+When `frozonfreak/graftai` is published to Packagist, installation is:
+
+```bash
+composer require frozonfreak/graftai
+php artisan vendor:publish --tag=graftai-migrations
+php artisan migrate
+```
+
+Until then, use the path repository approach:
+
+**1. Copy the package into your project:**
+
+```bash
+cp -r path/to/laravel-graft/Modules/GraftAI packages/graftai
+```
+
+**2. Add a path repository to your `composer.json`:**
+
+```json
+"repositories": [
+    {
+        "type": "path",
+        "url": "packages/graftai",
+        "options": { "symlink": true }
+    }
+]
+```
+
+**3. Require the package:**
+
+```bash
+composer require frozonfreak/graftai
+```
+
+**4. Publish and migrate:**
+
+```bash
+php artisan vendor:publish --tag=graftai-config
+php artisan vendor:publish --tag=graftai-migrations
+php artisan migrate
+```
+
+**5. Add your Anthropic key to `config/services.php`:**
+
+```php
+'anthropic' => [
+    'key' => env('ANTHROPIC_API_KEY'),
+],
+```
+
+### Publish tags
+
+| Tag | What it publishes |
+|---|---|
+| `graftai-config` | `config/graftai.php` — model, limits, promotion thresholds, queue, route settings |
+| `graftai-migrations` | 10 database migrations |
+| `graftai-seeders` | Demo seeders to `database/seeders/GraftAI/` |
+| `graftai-views` | Blade views to `resources/views/vendor/graftai/` |
 
 ---
 
@@ -82,11 +158,16 @@ composer test
 ```
 laravel-graft/
 ├── Modules/
-│   └── GraftAI/          # The self-evolving AI engine (nwidart/laravel-modules)
-├── app/                  # Standard Laravel app layer
-├── database/             # Root migrations and seeders
-├── docs/                 # Design docs and architecture notes
-└── routes/               # Root route stubs (module routes self-register)
+│   └── GraftAI/          # frozonfreak/graftai package (path repository)
+│       ├── src/           # All PHP source (namespace: GraftAI\)
+│       ├── config/        # graftai.php
+│       ├── database/      # Migrations and seeders
+│       ├── resources/     # Blade views
+│       └── routes/        # web.php and api.php
+├── app/                   # Standard Laravel app layer
+├── database/              # Root migrations and seeders
+├── docs/                  # Design docs and architecture notes
+└── routes/                # Root route stubs (package routes self-register)
 ```
 
 ---

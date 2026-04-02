@@ -323,7 +323,7 @@ php artisan migrate
 Seeds 5 demo tenants, feature configs, execution history, signals, and 2 promotion candidates:
 
 ```bash
-php artisan db:seed --class="Modules\GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
+php artisan db:seed --class="GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
 ```
 
 Or for a fresh install:
@@ -331,7 +331,7 @@ Or for a fresh install:
 ```bash
 php artisan migrate:fresh --seed
 # The root DatabaseSeeder must call GraftAIDatabaseSeeder, or seed directly:
-php artisan db:seed --class="Modules\GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
+php artisan db:seed --class="GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
 ```
 
 ### 9. Start the scheduler and queue worker
