@@ -1,18 +1,27 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "frozonfreak/laravel-graft",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Laravel demo application for the frozonfreak/graftai package.",
     "keywords": [
         "laravel",
-        "framework"
+        "graftai"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "Modules/GraftAI",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
         "php": "^8.3",
+        "frozonfreak/graftai": "*",
         "laravel/framework": "^13.0",
-        "laravel/tinker": "^3.0",
-        "nwidart/laravel-modules": "*"
+        "laravel/tinker": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -75,11 +84,6 @@
     "extra": {
         "laravel": {
             "dont-discover": []
-        },
-        "merge-plugin": {
-            "include": [
-                "Modules/*/composer.json"
-            ]
         }
     },
     "config": {
@@ -88,8 +92,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",

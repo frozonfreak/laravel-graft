@@ -1,6 +1,6 @@
 <?php
 
-use Modules\GraftAI\Dsl\PipelineSignature;
+use GraftAI\Dsl\PipelineSignature;
 
 it('produces the same signature for identical pipeline shapes', function () {
     $pipeline = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\GraftAI\Database\Seeders;
+namespace GraftAI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

@@ -1,7 +1,7 @@
 <?php
 
-use Modules\GraftAI\Http\Controllers\GovernanceDemoController;
-use Modules\GraftAI\Http\Controllers\TenantDemoController;
+use GraftAI\Http\Controllers\GovernanceDemoController;
+use GraftAI\Http\Controllers\TenantDemoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [TenantDemoController::class, 'index']);

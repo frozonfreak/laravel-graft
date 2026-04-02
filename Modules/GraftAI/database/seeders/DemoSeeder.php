@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\GraftAI\Database\Seeders;
+namespace GraftAI\Database\Seeders;
 
-use Modules\GraftAI\Dsl\PipelineSignature;
-use Modules\GraftAI\Models\AuditEvent;
-use Modules\GraftAI\Models\CapabilityRegistry;
-use Modules\GraftAI\Models\EvolutionEvent;
-use Modules\GraftAI\Models\ExecutionSignal;
-use Modules\GraftAI\Models\FeatureConfig;
-use Modules\GraftAI\Models\FeatureExecution;
-use Modules\GraftAI\Models\FeatureSnapshot;
-use Modules\GraftAI\Models\PromotionCandidate;
-use Modules\GraftAI\Models\Tenant;
-use Modules\GraftAI\Models\TenantBudget;
+use GraftAI\Dsl\PipelineSignature;
+use GraftAI\Models\AuditEvent;
+use GraftAI\Models\CapabilityRegistry;
+use GraftAI\Models\EvolutionEvent;
+use GraftAI\Models\ExecutionSignal;
+use GraftAI\Models\FeatureConfig;
+use GraftAI\Models\FeatureExecution;
+use GraftAI\Models\FeatureSnapshot;
+use GraftAI\Models\PromotionCandidate;
+use GraftAI\Models\Tenant;
+use GraftAI\Models\TenantBudget;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

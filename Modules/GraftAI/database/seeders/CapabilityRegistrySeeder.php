@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\GraftAI\Database\Seeders;
+namespace GraftAI\Database\Seeders;
 
-use Modules\GraftAI\Models\CapabilityRegistry;
+use GraftAI\Models\CapabilityRegistry;
 use Illuminate\Database\Seeder;
 
 /**

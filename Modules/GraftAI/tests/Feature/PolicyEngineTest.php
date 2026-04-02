@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\GraftAI\Dsl\PolicyEngine;
-use Modules\GraftAI\Models\Tenant;
+use GraftAI\Dsl\PolicyEngine;
+use GraftAI\Models\Tenant;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed the founding capabilities so the policy engine has something to validate against
-    (new \Modules\GraftAI\Database\Seeders\CapabilityRegistrySeeder())->run();
+    (new \GraftAI\Database\Seeders\CapabilityRegistrySeeder())->run();
 
     $this->tenant = Tenant::create([
         'name'   => 'Test Farm',

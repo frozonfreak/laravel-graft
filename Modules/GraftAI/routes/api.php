@@ -1,9 +1,9 @@
 <?php
 
-use Modules\GraftAI\Http\Controllers\Api\FeatureController;
-use Modules\GraftAI\Http\Controllers\Api\GovernanceController;
-use Modules\GraftAI\Http\Controllers\Api\SignalController;
-use Modules\GraftAI\Http\Controllers\Api\SnapshotController;
+use GraftAI\Http\Controllers\Api\FeatureController;
+use GraftAI\Http\Controllers\Api\GovernanceController;
+use GraftAI\Http\Controllers\Api\SignalController;
+use GraftAI\Http\Controllers\Api\SnapshotController;
 use Illuminate\Support\Facades\Route;
 
 /*

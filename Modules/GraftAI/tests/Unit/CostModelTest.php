@@ -1,6 +1,6 @@
 <?php
 
-use Modules\GraftAI\Dsl\CostModel;
+use GraftAI\Dsl\CostModel;
 
 it('returns a complete cost estimate structure', function () {
     $model = new CostModel();
