@@ -514,7 +514,7 @@
             "dist": {
                 "type": "path",
                 "url": "Modules/GraftAI",
-                "reference": "9abd269bffd4badd1729f4cc8979b7a8a6394366"
+                "reference": "e4c7be9f52364fdde28f8b240325b198d3f57bac"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -526,6 +526,7 @@
                 "php": "^8.3"
             },
             "require-dev": {
+                "larastan/larastan": "^3.0",
                 "orchestra/testbench": "^10.0",
                 "pestphp/pest": "^4.0",
                 "pestphp/pest-plugin-laravel": "^4.0"
