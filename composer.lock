@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e34cec0a0b810437b1079e1fae36bf2e",
+    "content-hash": "8c58ad0880a908a6ac236ed2a1c51e2b",
     "packages": [
         {
             "name": "brick/math",
@@ -514,7 +514,7 @@
             "dist": {
                 "type": "path",
                 "url": "Modules/GraftAI",
-                "reference": "e4c7be9f52364fdde28f8b240325b198d3f57bac"
+                "reference": "e6ae02106f38c20b39d401992e8e9b695cbe2a5f"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -523,7 +523,7 @@
                 "illuminate/queue": "^13.0",
                 "illuminate/routing": "^13.0",
                 "illuminate/support": "^13.0",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "require-dev": {
                 "larastan/larastan": "^3.0",
@@ -9811,7 +9811,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
