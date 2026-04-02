@@ -1,58 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# laravel-graft
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<p>
+  <a href="https://github.com/frozonfreak/laravel-graft/actions/workflows/ci.yml"><img src="https://github.com/frozonfreak/laravel-graft/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/PHP-8.3%2B-blue" alt="PHP 8.3+">
+  <img src="https://img.shields.io/badge/Laravel-13%2B-red" alt="Laravel 13+">
 </p>
 
-## About Laravel
+A Laravel SaaS skeleton with the **GraftAI** module — an AI-driven, self-evolving automation engine. Tenants describe what they want in plain English, the AI converts it into a live data pipeline, and the platform learns from usage to evolve its own capabilities over time.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> This repo is the full Laravel application. The GraftAI engine lives in [`Modules/GraftAI/`](Modules/GraftAI/README.md).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## What it does
 
-## Learning Laravel
+- Tenants type a natural language prompt ("alert me when yield drops 15%") → AI (Claude) generates a structured data pipeline
+- The pipeline runs on a cron schedule, queries live tenant data, and fires actions (email, SMS, webhook, push)
+- Anonymized execution signals are collected over time
+- A daily job detects pipeline shapes used by ≥3 tenants with ≥90% success rate → surfaces them as promotion candidates
+- Governance dashboard: review, approve, and promote a candidate into a named, versioned platform capability
+- The platform literally evolves itself — no new migrations, no new deployments
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Read the full module docs:** [Modules/GraftAI/README.md](Modules/GraftAI/README.md)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Requirements
 
-## Agentic Development
+- PHP 8.3+
+- Laravel 13+
+- SQLite / MySQL / PostgreSQL
+- An [Anthropic API key](https://console.anthropic.com/)
+- Node.js 18+ (for Vite assets)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Quick start
 
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/frozonfreak/laravel-graft.git
+cd laravel-graft
 
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+
+# Add your Anthropic key to .env:
+# ANTHROPIC_API_KEY=sk-ant-...
+
+php artisan migrate
+php artisan db:seed --class="Modules\GraftAI\Database\Seeders\GraftAIDatabaseSeeder"
+
+npm install && npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Then start all processes in one command:
+
+```bash
+composer dev
+```
+
+This starts the HTTP server, queue worker, and Vite dev server concurrently.
+
+Visit:
+- `http://localhost:8000` — Tenant dashboard
+- `http://localhost:8000/governance` — Governance dashboard
+
+---
+
+## Running tests
+
+```bash
+composer test
+```
+
+---
+
+## Project structure
+
+```
+laravel-graft/
+├── Modules/
+│   └── GraftAI/          # The self-evolving AI engine (nwidart/laravel-modules)
+├── app/                  # Standard Laravel app layer
+├── database/             # Root migrations and seeders
+├── docs/                 # Design docs and architecture notes
+└── routes/               # Root route stubs (module routes self-register)
+```
+
+---
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Security
 
-## Security Vulnerabilities
+See [SECURITY.md](SECURITY.md) for how to report vulnerabilities.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT — see [LICENSE](LICENSE).

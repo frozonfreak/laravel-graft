@@ -1,8 +1,8 @@
 {
     "name": "GraftAI",
     "alias": "graftai",
-    "description": "",
-    "keywords": [],
+    "description": "AI-driven, self-evolving automation engine for multi-tenant Laravel SaaS platforms",
+    "keywords": ["ai", "automation", "multi-tenant", "dsl", "evolution", "governance", "anthropic"],
     "priority": 0,
     "providers": [
         "Modules\\GraftAI\\Providers\\GraftAIServiceProvider"

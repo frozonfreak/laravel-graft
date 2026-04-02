@@ -1,18 +1,31 @@
 {
-    "name": "nwidart/graftai",
-    "description": "",
+    "name": "frozonfreak/graftai",
+    "description": "AI-driven, self-evolving automation engine for multi-tenant Laravel SaaS platforms",
+    "type": "laravel-module",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "ai",
+        "automation",
+        "multi-tenant",
+        "dsl",
+        "evolution",
+        "governance",
+        "anthropic"
+    ],
     "authors": [
         {
-            "name": "Nicolas Widart",
-            "email": "n.widart@gmail.com"
+            "name": "laravel-graft contributors",
+            "homepage": "https://github.com/frozonfreak/laravel-graft/graphs/contributors"
         }
     ],
+    "require": {
+        "php": "^8.3"
+    },
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {
-
-            }
+            "aliases": {}
         }
     },
     "autoload": {

@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Stray design docs at root
+"# AI-Driven Evolving System — Production.md"
+/public/build-graftai
